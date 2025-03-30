@@ -1,0 +1,2 @@
+This directory will contain all the image assets for the Nigerian AI Market e-commerce platform. 
+For a production environment, replace placeholder images with actual product photos and design elements. 
