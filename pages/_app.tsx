@@ -2,6 +2,7 @@ import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import { useState, useEffect } from 'react';
 import { AIAssistantProvider } from '../contexts/AIAssistantContext';
+import { CartProvider } from '../contexts/CartContext';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [isLoading, setIsLoading] = useState(true);
@@ -31,7 +32,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <AIAssistantProvider>
-      <Component {...pageProps} />
+      <CartProvider>
+        <Component {...pageProps} />
+      </CartProvider>
     </AIAssistantProvider>
   );
 }
