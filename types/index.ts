@@ -18,9 +18,15 @@ export interface Message {
   isUser: boolean;
 }
 
+export interface Entity {
+  text: string;
+  label: string;
+}
+
 export interface AIResponse {
   message: string;
-  action?: string;
+  intent?: string;
+  entities?: Entity[];
 }
 
 export interface AIAssistantProps {

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Message, AIAssistantProps } from '../types';
+import { Message, AIAssistantProps, Entity } from '../types';
 
 export const AIAssistant: React.FC<AIAssistantProps> = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -32,7 +32,6 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ isOpen, onClose }) => 
         },
         body: JSON.stringify({
           message: inputMessage,
-          cart_items: [], // We're not using cart items in this simple version
         }),
       });
 
@@ -48,6 +47,15 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ isOpen, onClose }) => 
         isUser: false,
       };
       setMessages(prev => [...prev, aiMessage]);
+
+      // Log intent and entities for debugging
+      if (data.intent) {
+        console.log('Detected intent:', data.intent);
+      }
+      if (data.entities && data.entities.length > 0) {
+        console.log('Detected entities:', data.entities);
+      }
+
     } catch (error) {
       console.error('Error:', error);
       const errorMessage: Message = {
