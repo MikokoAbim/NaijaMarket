@@ -14,28 +14,16 @@ export interface CartItem extends Product {
 }
 
 export interface Message {
-  id: number;
   text: string;
-  sender: 'user' | 'ai';
-  timestamp: string;
-  type: 'text' | 'error';
-  data?: any;
+  isUser: boolean;
 }
 
 export interface AIResponse {
   message: string;
-  action?: 'add_to_cart' | 'remove_from_cart' | 'update_quantity' | 'navigate';
-  data?: {
-    product?: Product;
-    product_id?: number;
-    quantity?: number;
-    url?: string;
-  };
+  action?: string;
 }
 
 export interface AIAssistantProps {
   isOpen: boolean;
   onClose: () => void;
-  cartItems: CartItem[];
-  setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
 } 

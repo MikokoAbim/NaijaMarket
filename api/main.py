@@ -46,6 +46,12 @@ class SearchQuery(BaseModel):
     max_price: Optional[float] = None
     sort_by: Optional[str] = None
 
+class AIAssistantRequest(BaseModel):
+    message: str
+
+class AIAssistantResponse(BaseModel):
+    message: str
+
 # Sample product database
 products_db = [
     {
@@ -91,8 +97,6 @@ async def get_products(
             filtered_products.sort(key=lambda x: x["price"])
         elif sort_by == "price-high":
             filtered_products.sort(key=lambda x: x["price"], reverse=True)
-        elif sort_by == "rating":
-            filtered_products.sort(key=lambda x: x.get("rating", 0), reverse=True)
     
     return filtered_products
 
@@ -191,5 +195,21 @@ async def search_products(search_query: SearchQuery):
     
     return filtered_products
 
+@app.post("/personal_assistant", response_model=AIAssistantResponse)
+async def process_ai_request(request: AIAssistantRequest):
+    message = request.message.lower().strip()
+    
+    # Simple greeting detection
+    greetings = ["hi", "hello", "hey"]
+    if message in greetings:
+        return AIAssistantResponse(
+            message="Hello! I'm your AI shopping assistant. How can I help you today?"
+        )
+    
+    # Default response for unrecognized messages
+    return AIAssistantResponse(
+        message="I'm not sure how to help with that. Could you please rephrase your request?"
+    )
+
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True) 
+    uvicorn.run(app, host="0.0.0.0", port=8000) 
