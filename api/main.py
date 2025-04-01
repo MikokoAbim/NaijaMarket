@@ -258,6 +258,7 @@ async def process_ai_request(request: AIAssistantRequest):
             if product_entities and store_entities:
                 product_name = product_entities[0]["text"]
                 store = store_entities[0]["text"]
+                # use the statement Garri from Mama Nkechi’s Groceries to my cart to get the response
                 response = f"I'll add {product_name} from {store} to your cart."
             else:
                 response = "Could you please specify the product and quantity you'd like to add?"
