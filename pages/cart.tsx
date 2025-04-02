@@ -119,14 +119,14 @@ export default function Cart() {
                         <div className="flex-shrink-0 w-24 h-24 relative">
                           <Image
                             src={item.image}
-                            alt={item.name}
+                            alt={item.product}
                             fill
                             className="object-cover rounded-lg"
                           />
                         </div>
                         <div className="ml-6 flex-grow">
-                          <h3 className="text-lg font-medium text-gray-900">{item.name}</h3>
-                          <p className="text-sm text-gray-500">{item.vendor}</p>
+                          <h3 className="text-lg font-medium text-gray-900">{item.product}</h3>
+                          <p className="text-sm text-gray-500">{item.store}</p>
                           <div className="mt-2 flex items-center">
                             <div className="flex items-center">
                               <button
@@ -249,8 +249,6 @@ export default function Cart() {
       <AIAssistant 
         isOpen={isOpen} 
         onClose={closeAssistant} 
-        cartItems={cartItems}
-        setCartItems={() => {}}
       />
     </div>
   );

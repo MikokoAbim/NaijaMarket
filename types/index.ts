@@ -9,8 +9,13 @@ export interface Product {
   badge?: string;
 }
 
-export interface CartItem extends Product {
+export interface CartItem {
+  id: number;
+  product: string;
+  price: number;
   quantity: number;
+  image: string;
+  store: string;
 }
 
 export interface Message {

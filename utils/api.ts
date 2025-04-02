@@ -5,13 +5,14 @@ const API_BASE_URL = 'http://localhost:8000';
 // Types
 export interface Product {
   id: number;
-  name: string;
+  product: string;
   price: number;
   image: string;
-  vendor: string;
+  store: string;
   categories?: string[];
   rating?: number;
   badge?: string;
+  description?: string;
 }
 
 export interface CartItem extends Product {
@@ -57,6 +58,11 @@ const api = {
     return response.data;
   },
 
+  getProductWithAiAssistant: async (product_name: string) => {
+    const response = await axios.get(`${API_BASE_URL}/products_with_Ai_Assitant/${product_name}`);
+    return response.data;
+  },
+
   searchProducts: async (query: SearchQuery) => {
     const response = await axios.post(`${API_BASE_URL}/search`, query);
     return response.data;
@@ -75,11 +81,11 @@ const api = {
     // Create cart item with all required fields
     const cartItem = {
       id: product.id,
-      name: product.name,
+      product: product.product,
       price: product.price,
       quantity: quantity,
       image: product.image,
-      vendor: product.vendor || 'Unknown Vendor'
+      store: product.store
     };
 
     // Add to cart with user_id (using a default for now)
@@ -112,10 +118,9 @@ const api = {
   },
 
   // AI Assistant operations
-  sendMessage: async (message: string, cartItems: CartItem[]) => {
+  sendMessage: async (message: string) => {
     const response = await axios.post(`${API_BASE_URL}/personal_assistant`, {
       message,
-      cart_items: cartItems
     });
     return response.data;
   }

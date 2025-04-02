@@ -1,9 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Message, AIAssistantProps, Entity } from '../types';
+import api from '../utils/api';
+import { useCart } from '../contexts/CartContext';
 
 export const AIAssistant: React.FC<AIAssistantProps> = ({ isOpen, onClose }) => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  // Step 1: Initialize state for input message using React's useState hook
+  // This creates a state variable 'inputMessage' and a function 'setInputMessage' to update it
+  const { setCartItems } = useCart();
   const [inputMessage, setInputMessage] = useState('');
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -12,34 +17,25 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ isOpen, onClose }) => 
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Step 2: Define the message sending handler
   const handleSendMessage = async () => {
+    // Step 3: Validate input before sending
     if (!inputMessage.trim() || isLoading) return;
 
-    // Add user message to chat
+    // Step 4: Create and add user message to chat history
     const userMessage: Message = {
       text: inputMessage,
       isUser: true,
     };
     setMessages(prev => [...prev, userMessage]);
+    
+    // Step 5: Clear the input field after sending
     setInputMessage('');
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8000/personal_assistant', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: inputMessage,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to get response from server');
-      }
-
-      const data = await response.json();
+      // Step 6: Send message to backend using api.sendMessage
+      const data = await api.sendMessage(inputMessage);
 
       // Add AI response to chat
       const aiMessage: Message = {
@@ -47,6 +43,12 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ isOpen, onClose }) => 
         isUser: false,
       };
       setMessages(prev => [...prev, aiMessage]);
+
+      // If the intent was addToCart, refresh the cart
+      if (data.intent === "addToCart") {
+        const updatedCart = await api.getCart();
+        setCartItems(updatedCart);
+      }
 
       // Log intent and entities for debugging
       if (data.intent) {
@@ -68,6 +70,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ isOpen, onClose }) => 
     }
   };
 
+  // Step 8: Handle keyboard events for sending message
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -126,21 +129,25 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ isOpen, onClose }) => 
               </div>
             </div>
 
-            {/* Input */}
+            {/* Input Section */}
             <div className="flex-shrink-0 px-4 py-4 sm:px-6">
               <div className="flex space-x-4">
                 <input
                   type="text"
                   className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                   placeholder="Type your message..."
+                  // Step 9: Bind input value to state
                   value={inputMessage}
+                  // Step 10: Update state when input changes
                   onChange={(e) => setInputMessage(e.target.value)}
+                  // Step 11: Handle Enter key press
                   onKeyPress={handleKeyPress}
                   disabled={isLoading}
                 />
                 <button
                   type="button"
                   className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  // Step 12: Handle button click to send message
                   onClick={handleSendMessage}
                   disabled={!inputMessage.trim() || isLoading}
                 >

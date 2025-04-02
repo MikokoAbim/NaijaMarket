@@ -9,6 +9,18 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import load_model
 import spacy
 
+# Product categories for the marketplace
+PRODUCT_CATEGORIES = [
+    "Food & Groceries",      # Traditional foods, spices, grains
+    "Fashion & Accessories", # Traditional clothing, jewelry, bags
+    "Arts & Crafts",        # Handmade items, paintings, sculptures
+    "Home & Living",        # Home decor, furniture, kitchenware
+    "Beauty & Wellness",    # Natural cosmetics, traditional medicine
+    "Electronics",          # Mobile phones, accessories, gadgets
+    "Books & Education",    # Educational materials, textbooks
+    "Sports & Recreation"   # Sports equipment, games
+]
+
 app = FastAPI(title="NaijaMarket API")
 
 # Enable CORS
@@ -37,25 +49,29 @@ except Exception as e:
     print(f"Error loading models: {e}")
     raise
 
-# Data Models
+# BaseModel from Pydantic provides:
+# 1. Data validation - ensures all fields have correct types
+# 2. JSON serialization/deserialization - converts between Python objects and JSON
+# 3. Schema generation - creates OpenAPI documentation automatically
+# 4. Type checking - provides runtime type checking for all fields
 class Product(BaseModel):
     id: int
-    name: str
+    product: str
     price: float
     image: str
     categories: List[str]
     rating: Optional[float] = None
-    vendor: Optional[str] = None
+    store: Optional[str] = None
     badge: Optional[str] = None
     description: Optional[str] = None
 
 class CartItem(BaseModel):
     id: int
-    name: str
+    product: str
     price: float
     quantity: int
     image: str
-    vendor: str
+    store: str
 
 class CartUpdate(BaseModel):
     product_id: int
@@ -80,15 +96,34 @@ class AIAssistantResponse(BaseModel):
 products_db = [
     {
         "id": 1,
-        "name": "Ankara Fabric Tote Bag",
+        "product": "Garri",
         "price": 4500,
-        "image": "/images/product-tote.jpg",
-        "categories": ["accessories", "fashion"],
+        "image": "/images/products/garri.jpg",  # Updated path to match Next.js public directory structure
+        "categories": ["Food & Groceries"],
         "rating": 4.5,
-        "vendor": "Lagos Crafts",
+        "store": "Mama Nkechi's Groceries",
+        "description": "Premium quality Garri from local farms"
+    },
+    {
+        "id": 2,
+        "product": "Local beans",
+        "price": 3500,
+        "image": "/images/products/local-beans.jpg",  # Updated path to match Next.js public directory structure
+        "categories": ["Food & Groceries"],
+        "rating": 4.8,
+        "store": "Lagos Crafts",
         "description": "Beautiful handcrafted Ankara tote bag"
     },
-    # ... Add more products
+    {
+        "id": 3,
+        "product": "Traditional Beaded Necklace",
+        "price": 2500,
+        "image": "/images/products/beaded-necklace.jpg",  # Updated path to match Next.js public directory structure
+        "categories": ["Fashion & Accessories", "Arts & Crafts"],
+        "rating": 4.6,
+        "store": "African Treasures",
+        "description": "Handmade traditional beaded necklace"
+    }
 ]
 
 # In-memory cart storage (in production, use a database)
@@ -97,6 +132,11 @@ carts = {}
 @app.get("/")
 async def root():
     return {"message": "Welcome to NaijaMarket API"}
+
+@app.get("/categories")
+async def get_categories():
+    """Get list of all available product categories"""
+    return PRODUCT_CATEGORIES
 
 @app.get("/products", response_model=List[Product])
 async def get_products(
@@ -108,6 +148,8 @@ async def get_products(
     filtered_products = products_db
     
     if category:
+        if category not in PRODUCT_CATEGORIES:
+            raise HTTPException(status_code=400, detail=f"Invalid category. Must be one of: {', '.join(PRODUCT_CATEGORIES)}")
         filtered_products = [p for p in filtered_products if category in p["categories"]]
     
     if min_price is not None:
@@ -127,6 +169,13 @@ async def get_products(
 @app.get("/products/{product_id}", response_model=Product)
 async def get_product(product_id: int):
     product = next((p for p in products_db if p["id"] == product_id), None)
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return product
+
+@app.get("/products_with_Ai_Assitant/{product_name}", response_model=Product)
+async def get_product_with_Ai_Assitant(product_name: str):
+    product = next((p for p in products_db if p["product"] == product_name), None)
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     return product
@@ -193,13 +242,15 @@ async def search_products(search_query: SearchQuery):
         query = search_query.query.lower()
         filtered_products = [
             p for p in filtered_products
-            if query in p["name"].lower() or
+            if query in p["product"].lower() or
             query in p.get("description", "").lower() or
             any(query in cat.lower() for cat in p["categories"])
         ]
     
     # Apply filters
     if search_query.category:
+        if search_query.category not in PRODUCT_CATEGORIES:
+            raise HTTPException(status_code=400, detail=f"Invalid category. Must be one of: {', '.join(PRODUCT_CATEGORIES)}")
         filtered_products = [p for p in filtered_products if search_query.category in p["categories"]]
     
     if search_query.min_price is not None:
@@ -237,33 +288,48 @@ async def process_ai_request(request: AIAssistantRequest):
         
         # Get entity recognition
         doc = nlp_ner(message)
+        # Convert spaCy entities to a list of dictionaries with text and label
         entities = [{"text": ent.text, "label": ent.label_} for ent in doc.ents]
         
         # Generate response based on intent and entities
-        if intent == "greeting":
-            response = "Hello! I'm your AI shopping assistant. How can I help you today?"
-        elif intent == "search_product":
-            # Extract product name from entities
-            product_entities = [e for e in entities if e["label"] == "PRODUCT"]
-            if product_entities:
-                product_name = product_entities[0]["text"]
-                response = f"I'll help you find {product_name}. Let me search our catalog."
-            else:
-                response = "What product would you like to search for?"
-        elif intent == "addToCart":
-            # Extract product and quantity from entities
+        if intent == "addToCart":
+            # Filter entities to get only products and stores
             product_entities = [e for e in entities if e["label"] == "product"]
             store_entities = [e for e in entities if e["label"] == "store"]
             
             if product_entities and store_entities:
+                # Get the first product and store found in the message
+                # [0] gets the first item in the list, ["text"] gets the actual text content
                 product_name = product_entities[0]["text"]
                 store = store_entities[0]["text"]
-                # use the statement Garri from Mama Nkechi’s Groceries to my cart to get the response
-                response = f"I'll add {product_name} from {store} to your cart."
+                
+                try:
+                    # First check if product exists
+                    product = await get_product_with_Ai_Assitant(product_name)
+                    
+                    # If product exists, create cart item and add to cart
+                    cart_item = CartItem(
+                        id=product["id"],
+                        product=product["product"],
+                        price=product["price"],
+                        quantity=1,  # Default quantity
+                        image=product["image"],
+                        store=product["store"]
+                    )
+                    
+                    # Add to cart
+                    await add_to_cart("default_user", cart_item)
+                    
+                    response = f"I've added {product_name} from {store} to your cart."
+                except HTTPException as e:
+                    if e.status_code == 404:
+                        response = f"I couldn't find {product_name} in our catalog. Please check the product name and try again."
+                    else:
+                        response = "Sorry, I encountered an error while adding the item to your cart."
             else:
-                response = "Could you please specify the product and quantity you'd like to add?"
+                response = "Could you please specify the product and store you'd like to add?"
         else:
-            response = "I'm not sure how to help with that. Could you please rephrase your requestv test {intent}?"
+            response = f"I'm not sure how to help with that. Could you please rephrase your request? (Detected intent: {intent})"
         
         return AIAssistantResponse(
             message=response,
