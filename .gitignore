@@ -3,6 +3,9 @@ node_modules/
 /.pnp
 .pnp.js
 
+venv/
+venv1/
+
 # Testing
 /coverage
 

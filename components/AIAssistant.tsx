@@ -1,288 +1,163 @@
-import React, { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
-
-interface Message {
-  id: string;
-  text: string;
-  sender: 'user' | 'ai';
-  timestamp: Date;
-  type: 'text' | 'product' | 'navigation';
-  data?: any;
-}
-
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  category: string;
-  subcategory: string;
-  rating: number;
-  vendor: string;
-  keywords: string[];
-}
-
-interface AIResponse {
-  type: 'text' | 'product' | 'navigation';
-  text: string;
-  data?: any;
-}
-
-interface AIAssistantProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-// Sample product data
-const sampleProducts: Product[] = [
-  {
-    id: 'p1',
-    name: 'Traditional Ankara Dress',
-    price: 15999.99,
-    image: '/images/placeholder.jpg',
-    category: 'clothing',
-    subcategory: 'traditional',
-    rating: 4.5,
-    vendor: 'Lagos Fashion House',
-    keywords: ['ankara', 'dress', 'traditional', 'clothing', 'fashion']
-  },
-  {
-    id: 'p2',
-    name: 'Smart LED TV',
-    price: 249999.99,
-    image: '/images/placeholder.jpg',
-    category: 'electronics',
-    subcategory: 'televisions',
-    rating: 4.8,
-    vendor: 'TechZone Nigeria',
-    keywords: ['tv', 'television', 'smart tv', 'electronics', 'led']
-  }
-];
-
-// Navigation mapping with synonyms and variations
-const navigationMap = {
-  home: {
-    url: '/',
-    keywords: ['home', 'homepage', 'main page', 'start', 'beginning']
-  },
-  products: {
-    url: '/products',
-    keywords: ['products', 'items', 'goods', 'merchandise', 'catalog']
-  },
-  categories: {
-    url: '/categories',
-    keywords: ['categories', 'departments', 'sections', 'types']
-  },
-  clothing: {
-    url: '/categories/clothing',
-    keywords: ['clothing', 'clothes', 'fashion', 'apparel', 'wear']
-  },
-  electronics: {
-    url: '/categories/electronics',
-    keywords: ['electronics', 'gadgets', 'devices', 'tech']
-  },
-  beauty: {
-    url: '/categories/beauty',
-    keywords: ['beauty', 'cosmetics', 'makeup', 'skincare', 'personal care']
-  },
-  homeLiving: {
-    url: '/categories/home',
-    keywords: ['home', 'household', 'furniture', 'decor']
-  },
-  cart: {
-    url: '/cart',
-    keywords: ['cart', 'basket', 'shopping cart', 'checkout']
-  },
-  account: {
-    url: '/account',
-    keywords: ['account', 'profile', 'my account', 'dashboard']
-  },
-  contact: {
-    url: '/contact',
-    keywords: ['contact', 'contact us', 'help', 'support']
-  }
-};
-
-// Common phrases and their variations
-const commonPhrases = {
-  greetings: ['hello', 'hi', 'hey', 'good morning', 'good afternoon', 'good evening'],
-  farewells: ['goodbye', 'bye', 'see you', 'take care'],
-  thanks: ['thank you', 'thanks', 'appreciate it'],
-  help: ['help', 'assist', 'support', 'guide'],
-  search: ['find', 'search', 'look for', 'where can i find']
-};
+import React, { useState, useRef, useEffect } from 'react';
+import { Message, AIAssistantProps, Entity } from '../types';
+import api from '../utils/api';
+import { useCart } from '../contexts/CartContext';
 
 export const AIAssistant: React.FC<AIAssistantProps> = ({ isOpen, onClose }) => {
-  const router = useRouter();
+  // Step 1: Initialize state for input message using React's useState hook
+  // This creates a state variable 'inputMessage' and a function 'setInputMessage' to update it
+  const { setCartItems } = useCart();
+  const [inputMessage, setInputMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
+  // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
-    scrollToBottom();
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const generateResponse = async (userInput: string): Promise<AIResponse> => {
-    setIsTyping(true);
-    const lowercaseInput = userInput.toLowerCase();
-    
-    // Check for navigation intents
-    for (const [key, value] of Object.entries(navigationMap)) {
-      if (value.keywords.some(keyword => lowercaseInput.includes(keyword))) {
-        return {
-          type: 'navigation',
-          text: `I can help you navigate to the ${key} page.`,
-          data: { url: value.url }
-        };
-      }
-    }
+  // Step 2: Define the message sending handler
+  const handleSendMessage = async () => {
+    // Step 3: Validate input before sending
+    if (!inputMessage.trim() || isLoading) return;
 
-    // Check for product search
-    if (commonPhrases.search.some(phrase => lowercaseInput.includes(phrase))) {
-      const matchedProducts = sampleProducts.filter(product => 
-        product.keywords.some(keyword => lowercaseInput.includes(keyword))
-      );
-
-      if (matchedProducts.length > 0) {
-        return {
-          type: 'product',
-          text: 'I found these products that might interest you:',
-          data: { products: matchedProducts }
-        };
-      }
-    }
-
-    // Default response
-    return {
-      type: 'text',
-      text: "I'm here to help you find products, navigate the site, or answer any questions you might have about our marketplace."
+    // Step 4: Create and add user message to chat history
+    const userMessage: Message = {
+      text: inputMessage,
+      isUser: true,
     };
+    setMessages(prev => [...prev, userMessage]);
+    
+    // Step 5: Clear the input field after sending
+    setInputMessage('');
+    setIsLoading(true);
+
+    try {
+      // Step 6: Send message to backend using api.sendMessage
+      const data = await api.sendMessage(inputMessage);
+
+      // Add AI response to chat
+      const aiMessage: Message = {
+        text: data.message,
+        isUser: false,
+      };
+      setMessages(prev => [...prev, aiMessage]);
+
+      // If the intent was addToCart, refresh the cart
+      if (data.intent === "addToCart") {
+        const updatedCart = await api.getCart();
+        setCartItems(updatedCart);
+      }
+
+      // Log intent and entities for debugging
+      if (data.intent) {
+        console.log('Detected intent:', data.intent);
+      }
+      if (data.entities && data.entities.length > 0) {
+        console.log('Detected entities:', data.entities);
+      }
+
+    } catch (error) {
+      console.error('Error:', error);
+      const errorMessage: Message = {
+        text: 'Sorry, I encountered an error. Please try again.',
+        isUser: false,
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim()) return;
-
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      text: input,
-      sender: 'user',
-      timestamp: new Date(),
-      type: 'text'
-    };
-
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
-
-    const response = await generateResponse(input);
-    const aiMessage: Message = {
-      id: (Date.now() + 1).toString(),
-      text: response.text,
-      sender: 'ai',
-      timestamp: new Date(),
-      type: response.type,
-      data: response.data
-    };
-
-    setMessages(prev => [...prev, aiMessage]);
-    setIsTyping(false);
-
-    // Handle navigation if response type is 'navigation'
-    if (response.type === 'navigation' && response.data?.url) {
-      setTimeout(() => {
-        router.push(response.data.url);
-        onClose(); // Close the AI assistant after navigation
-      }, 1000); // Small delay to show the response message
+  // Step 8: Handle keyboard events for sending message
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
     }
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 w-96 h-[600px] bg-white rounded-lg shadow-xl flex flex-col">
-      <div className="p-4 bg-blue-600 text-white rounded-t-lg flex justify-between items-center">
-        <h3 className="text-lg font-semibold">AI Assistant</h3>
-        <button
-          onClick={onClose}
-          className="text-white hover:text-gray-200"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-          >
-            <div
-              className={`max-w-[80%] p-3 rounded-lg ${
-                message.sender === 'user'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-800'
-              }`}
-            >
-              {message.type === 'product' && message.data?.products && (
-                <div className="space-y-2">
-                  {message.data.products.map((product: Product) => (
-                    <div key={product.id} className="flex items-center space-x-2 bg-white p-2 rounded">
-                      <div className="w-16 h-16 relative">
-                        <Image
-                          src={product.image}
-                          alt={product.name}
-                          width={64}
-                          height={64}
-                          className="rounded"
-                        />
-                      </div>
-                      <div>
-                        <p className="font-semibold">{product.name}</p>
-                        <p className="text-sm">₦{product.price.toLocaleString()}</p>
-                      </div>
-                    </div>
-                  ))}
+    <div className="fixed inset-0 z-50 overflow-hidden">
+      <div className="absolute inset-0 bg-black bg-opacity-50" onClick={onClose} />
+      
+      <div className="fixed inset-y-0 right-0 pl-10 max-w-full flex sm:pl-16">
+        <div className="w-screen max-w-md">
+          <div className="h-full flex flex-col bg-white shadow-xl">
+            {/* Header */}
+            <div className="flex-shrink-0 px-4 py-6 sm:px-6">
+              <div className="flex items-start justify-between">
+                <h2 className="text-lg font-medium text-gray-900">AI Shopping Assistant</h2>
+                <div className="ml-3 h-7 flex items-center">
+                  <button
+                    type="button"
+                    className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    onClick={onClose}
+                  >
+                    <span className="sr-only">Close panel</span>
+                    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
                 </div>
-              )}
-              <p>{message.text}</p>
+              </div>
             </div>
-          </div>
-        ))}
-        {isTyping && (
-          <div className="flex justify-start">
-            <div className="bg-gray-100 p-3 rounded-lg">
-              <p>Typing...</p>
-            </div>
-          </div>
-        )}
-        <div ref={messagesEndRef} />
-      </div>
 
-      <form onSubmit={handleSubmit} className="p-4 border-t">
-        <div className="flex space-x-2">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your message..."
-            className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-          />
-          <button
-            type="submit"
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
-          >
-            Send
-          </button>
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto px-4 sm:px-6">
+              <div className="space-y-4 py-4">
+                {messages.map((message, index) => (
+                  <div
+                    key={index}
+                    className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div
+                      className={`rounded-lg px-4 py-2 max-w-[80%] ${
+                        message.isUser
+                          ? 'bg-blue-100 text-blue-900'
+                          : 'bg-gray-100 text-gray-900'
+                      }`}
+                    >
+                      <p className="text-sm">{message.text}</p>
+                    </div>
+                  </div>
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
+            </div>
+
+            {/* Input Section */}
+            <div className="flex-shrink-0 px-4 py-4 sm:px-6">
+              <div className="flex space-x-4">
+                <input
+                  type="text"
+                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  placeholder="Type your message..."
+                  // Step 9: Bind input value to state
+                  value={inputMessage}
+                  // Step 10: Update state when input changes
+                  onChange={(e) => setInputMessage(e.target.value)}
+                  // Step 11: Handle Enter key press
+                  onKeyPress={handleKeyPress}
+                  disabled={isLoading}
+                />
+                <button
+                  type="button"
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  // Step 12: Handle button click to send message
+                  onClick={handleSendMessage}
+                  disabled={!inputMessage.trim() || isLoading}
+                >
+                  {isLoading ? 'Sending...' : 'Send'}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-      </form>
+      </div>
     </div>
   );
 }; 
