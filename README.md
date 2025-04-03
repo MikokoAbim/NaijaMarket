@@ -36,14 +36,29 @@ An AI-powered e-commerce platform inspired by Nigerian culture and crafts. This 
 2. Install dependencies:
    ```bash
    npm install
+
+   pip install -r requirements.txt
    ```
 
-3. Run the development server:
+Note two different terminals are needed to run the services indvidually
+3. Run the Api service:
+   ```bash
+   python main.py
+   ```
+
+   if the error below comes up after python main.py run, you need to acquire a new model of intent_recognition_model (contact Michael for now)
+   OSError: Cannot parse keras metadata at path intent_recognition_model\keras_metadata.pb: Received error: Error parsing message 
+
+4. Run the Frontend service:
    ```bash
    npm run dev
    ```
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+5. Commands to be used for testing addToCart (It is more flexible than this but these give )
+- Local beans from Lagos Essentials in my cart
+- Garri from Mama Nkechi’s Groceries to my cart
 
 ## Project Structure
 
