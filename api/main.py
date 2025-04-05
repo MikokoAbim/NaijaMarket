@@ -98,32 +98,247 @@ products_db = [
     {
         "id": 1,
         "product": "Garri",
-        "price": 4500,
-        "image": "/images/products/garri.jpg",  # Updated path to match Next.js public directory structure
+        "price": 5000,
+        "image": "/images/products/garri.jpg",
         "categories": ["Food & Groceries"],
         "rating": 4.5,
-        "store": "Mama Nkechi's Groceries",
-        "description": "Premium quality Garri from local farms"
+        "store": "Nigerian Foods Ltd",
+        "badge": "Best Seller",
+        "description": "Premium quality garri made from fresh cassava"
     },
     {
         "id": 2,
-        "product": "Local beans",
+        "product": "Local Beans",
         "price": 3500,
-        "image": "/images/products/local-beans.jpg",  # Updated path to match Next.js public directory structure
+        "image": "/images/products/local-beans.jpg",
         "categories": ["Food & Groceries"],
-        "rating": 4.8,
-        "store": "Lagos Crafts",
-        "description": "Beautiful handcrafted Ankara tote bag"
+        "rating": 4.2,
+        "store": "Lagos Essentials",
+        "badge": "Popular",
+        "description": "Fresh local beans, perfect for traditional dishes"
     },
     {
         "id": 3,
-        "product": "Traditional Beaded Necklace",
-        "price": 2500,
-        "image": "/images/products/beaded-necklace.jpg",  # Updated path to match Next.js public directory structure
-        "categories": ["Fashion & Accessories", "Arts & Crafts"],
+        "product": "Local Beans",
+        "price": 3200,
+        "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+        "categories": ["Food & Groceries"],
+        "rating": 4.0,
+        "store": "Abuja Fresh Foods",
+        "badge": "New",
+        "description": "Premium quality local beans from Northern Nigeria"
+    },
+    {
+        "id": 4,
+        "product": "Local Beans",
+        "price": 3800,
+        "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+        "categories": ["Food & Groceries"],
+        "rating": 4.3,
+        "store": "Ibadan Farmers Market",
+        "badge": "Best Value",
+        "description": "Organic local beans from Oyo State farms"
+    },
+    {
+        "id": 5,
+        "product": "Local Beans",
+        "price": 3000,
+        "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+        "categories": ["Food & Groceries"],
+        "rating": 3.9,
+        "store": "Kano Grains Store",
+        "description": "Traditional local beans from Northern Nigeria"
+    },
+    {
+        "id": 6,
+        "product": "Local Beans",
+        "price": 4000,
+        "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+        "categories": ["Food & Groceries"],
+        "rating": 4.4,
+        "store": "Port Harcourt Fresh Foods",
+        "badge": "Premium",
+        "description": "High-quality local beans from Rivers State"
+    },
+    {
+        "id": 7,
+        "product": "Local Beans",
+        "price": 3600,
+        "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+        "categories": ["Food & Groceries"],
+        "rating": 4.1,
+        "store": "Enugu Market Square",
+        "description": "Fresh local beans from Eastern Nigeria"
+    },
+    {
+        "id": 8,
+        "product": "Local Beans",
+        "price": 4200,
+        "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+        "categories": ["Food & Groceries"],
         "rating": 4.6,
-        "store": "African Treasures",
-        "description": "Handmade traditional beaded necklace"
+        "store": "Calabar Organic Foods",
+        "badge": "Organic",
+        "description": "Certified organic local beans from Cross River State"
+    },
+    {
+        "id": 9,
+        "product": "Local Beans",
+        "price": 3400,
+        "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+        "categories": ["Food & Groceries"],
+        "rating": 4.0,
+        "store": "Benin City Market",
+        "description": "Traditional local beans from Edo State"
+    },
+    {
+        "id": 10,
+        "product": "Local Beans",
+        "price": 3900,
+        "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+        "categories": ["Food & Groceries"],
+        "rating": 4.2,
+        "store": "Jos Fresh Produce",
+        "badge": "Fresh",
+        "description": "Fresh local beans from Plateau State"
+    },
+    {
+        "id": 11,
+        "product": "Local Beans",
+        "price": 3700,
+        "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+        "categories": ["Food & Groceries"],
+        "rating": 4.3,
+        "store": "Maiduguri Grains",
+        "description": "Premium local beans from Borno State"
+    },
+    {
+        "id": 12,
+        "product": "Local Beans",
+        "price": 4100,
+        "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+        "categories": ["Food & Groceries"],
+        "rating": 4.5,
+        "store": "Sokoto Fresh Foods",
+        "badge": "Premium",
+        "description": "High-quality local beans from Sokoto State"
+    },
+    {
+        "id": 13,
+        "product": "Garri",
+        "price": 1800,
+        "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+        "categories": ["Food & Groceries"],
+        "rating": 3.8,
+        "store": "Oyo State Garri Market",
+        "description": "Standard white garri from Oyo State"
+    },
+    {
+        "id": 14,
+        "product": "Garri",
+        "price": 2200,
+        "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+        "categories": ["Food & Groceries"],
+        "rating": 4.0,
+        "store": "Edo Garri Hub",
+        "description": "Yellow garri from Edo State"
+    },
+    {
+        "id": 15,
+        "product": "Garri",
+        "price": 2500,
+        "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+        "categories": ["Food & Groceries"],
+        "rating": 4.2,
+        "store": "Delta Cassava Products",
+        "badge": "Popular",
+        "description": "Premium white garri from Delta State"
+    },
+    {
+        "id": 16,
+        "product": "Garri",
+        "price": 2800,
+        "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+        "categories": ["Food & Groceries"],
+        "rating": 4.1,
+        "store": "Imo State Garri Co",
+        "description": "Fine white garri from Imo State"
+    },
+    {
+        "id": 17,
+        "product": "Garri",
+        "price": 3200,
+        "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+        "categories": ["Food & Groceries"],
+        "rating": 4.3,
+        "store": "Anambra Garri Mart",
+        "badge": "Premium",
+        "description": "Superior quality yellow garri from Anambra"
+    },
+    {
+        "id": 18,
+        "product": "Garri",
+        "price": 3500,
+        "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+        "categories": ["Food & Groceries"],
+        "rating": 4.4,
+        "store": "Ogun State Garri Depot",
+        "description": "Organic white garri from Ogun State"
+    },
+    {
+        "id": 19,
+        "product": "Garri",
+        "price": 3800,
+        "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+        "categories": ["Food & Groceries"],
+        "rating": 4.5,
+        "store": "Osun Garri Factory",
+        "badge": "Best Value",
+        "description": "Premium yellow garri from Osun State"
+    },
+    {
+        "id": 20,
+        "product": "Garri",
+        "price": 4200,
+        "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+        "categories": ["Food & Groceries"],
+        "rating": 4.6,
+        "store": "Ekiti Garri Producers",
+        "badge": "Organic",
+        "description": "Organic yellow garri from Ekiti State"
+    },
+    {
+        "id": 21,
+        "product": "Garri",
+        "price": 4500,
+        "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+        "categories": ["Food & Groceries"],
+        "rating": 4.7,
+        "store": "Ondo State Garri Co",
+        "badge": "Premium",
+        "description": "Superior quality white garri from Ondo State"
+    },
+    {
+        "id": 22,
+        "product": "Garri",
+        "price": 4800,
+        "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+        "categories": ["Food & Groceries"],
+        "rating": 4.8,
+        "store": "Lagos Premium Garri",
+        "badge": "Best Seller",
+        "description": "Premium yellow garri from Lagos State"
+    },
+    {
+        "id": 23,
+        "product": "Garri",
+        "price": 5200,
+        "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+        "categories": ["Food & Groceries"],
+        "rating": 4.9,
+        "store": "Abuja Organic Garri",
+        "badge": "Organic",
+        "description": "Organic premium white garri from Abuja"
     }
 ]
 
@@ -350,22 +565,34 @@ async def process_ai_request(request: AIAssistantRequest):
                 response = "Could you please specify which product you'd like to remove from your cart?"
 
         elif intent == "searchProduct":
-            product_entities = [e for e in entities if e["label"] == "product"]
+            # Extract product entity
+            product = next((e["text"] for e in entities if e["label"] == "product"), None)
             
-            if product_entities:
-                product_name = product_entities[0]["text"]
+            if product:
+                # Search for the product
                 try:
-                    product = await get_product_with_Ai_Assitant(product_name)
-                    response = f"I found {product['product']} for ₦{product['price']} at {product['store']}. Would you like to add it to your cart?"
+                    search_results = await get_product_with_Ai_Assitant(product)
+                    return AIAssistantResponse(
+                        message=f"I have found products that are {product}.",
+                        intent=intent,
+                        entities=entities,
+                        navigation={
+                            "path": f"/products?search={product}",
+                            "action": "navigate"
+                        }
+                    )
                 except HTTPException:
-                    # If exact product not found, search for similar products
-                    search_results = await search_products(SearchQuery(query=product_name))
-                    if search_results:
-                        response = f"I found similar products: {', '.join([p['product'] for p in search_results[:3]])}. Would you like to see more details about any of these?"
-                    else:
-                        response = f"I couldn't find {product_name}. Would you like to try a different search term?"
+                    return AIAssistantResponse(
+                        message=f"I couldn't find {product}. Please try a different search term.",
+                        intent=intent,
+                        entities=entities
+                    )
             else:
-                response = "Could you please specify what you're looking for? You can search by product name."
+                return AIAssistantResponse(
+                    message="I couldn't understand what product you're looking for. Please try again.",
+                    intent=intent,
+                    entities=entities
+                )
 
         elif intent == "viewCart":
             cart_items = await get_cart("default_user")

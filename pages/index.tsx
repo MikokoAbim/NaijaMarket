@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Head from 'next/head';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { AIAssistant } from '../components/AIAssistant';
+import AIAssistant from '../components/AIAssistant';
 import FeaturedProducts from '../components/FeaturedProducts';
 import HeroSection from '../components/HeroSection';
 import CategorySection from '../components/CategorySection';
@@ -41,7 +41,7 @@ export default function Home() {
       <Footer />
       
       {/* AI Assistant Modal */}
-      <AIAssistant isOpen={isOpen} onClose={closeAssistant} />
+      {isOpen && <AIAssistant onClose={closeAssistant} />}
     </div>
   );
 } 

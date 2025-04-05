@@ -6,8 +6,9 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useAIAssistant } from '../contexts/AIAssistantContext';
 import { useCart } from '../contexts/CartContext';
-import { AIAssistant } from '../components/AIAssistant';
-import api, { CartItem } from '../utils/api';
+import AIAssistant from '../components/AIAssistant';
+import api from '../utils/api';
+import { CartItem } from '../types';
 
 export default function Cart() {
   const { isOpen, openAssistant, closeAssistant } = useAIAssistant();
@@ -234,7 +235,7 @@ export default function Cart() {
 
       <Footer />
       
-      {/* AI Assistant Button */}
+      {/* Floating AI Assistant Button */}
       <button 
         onClick={openAssistant}
         className="fixed bottom-6 right-6 bg-nigerian-green text-white rounded-full p-4 shadow-lg hover:bg-opacity-90 transition-all z-20"
@@ -246,10 +247,7 @@ export default function Cart() {
       </button>
       
       {/* AI Assistant Modal */}
-      <AIAssistant 
-        isOpen={isOpen} 
-        onClose={closeAssistant} 
-      />
+      {isOpen && <AIAssistant onClose={closeAssistant} />}
     </div>
   );
 } 
