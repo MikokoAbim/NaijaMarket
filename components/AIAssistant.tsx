@@ -2,11 +2,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Message, AIAssistantProps, Entity } from '../types';
 import api from '../utils/api';
 import { useCart } from '../contexts/CartContext';
+import { useRouter } from 'next/router';
 
 export const AIAssistant: React.FC<AIAssistantProps> = ({ isOpen, onClose }) => {
   // Step 1: Initialize state for input message using React's useState hook
   // This creates a state variable 'inputMessage' and a function 'setInputMessage' to update it
   const { setCartItems } = useCart();
+  const router = useRouter();
   const [inputMessage, setInputMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -44,8 +46,17 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ isOpen, onClose }) => 
       };
       setMessages(prev => [...prev, aiMessage]);
 
-      // If the intent was addToCart, refresh the cart
-      if (data.intent === "addToCart") {
+      // Handle navigation if specified
+      if (data.navigation) {
+        if (data.navigation.action === 'navigate') {
+          router.push(data.navigation.path);
+          // Optionally close the AI assistant after navigation
+          onClose();
+        }
+      }
+
+      // If the intent was addToCart or removeFromCart, refresh the cart
+      if (data.intent === "addToCart" || data.intent === "removeFromCart") {
         const updatedCart = await api.getCart();
         setCartItems(updatedCart);
       }

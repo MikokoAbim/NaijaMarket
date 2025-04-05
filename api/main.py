@@ -91,6 +91,7 @@ class AIAssistantResponse(BaseModel):
     message: str
     intent: Optional[str] = None
     entities: Optional[List[Dict[str, str]]] = None
+    navigation: Optional[Dict[str, str]] = None
 
 # Sample product database
 products_db = [
@@ -280,6 +281,7 @@ async def process_ai_request(request: AIAssistantRequest):
     message = request.message.strip()
     
     try:
+        navigation = None
         # Get intent prediction
         input_features = prepare_sentence(message)
         probs = intent_model.predict(input_features)
@@ -288,7 +290,6 @@ async def process_ai_request(request: AIAssistantRequest):
         
         # Get entity recognition
         doc = nlp_ner(message)
-        # Convert spaCy entities to a list of dictionaries with text and label
         entities = [{"text": ent.text, "label": ent.label_} for ent in doc.ents]
         
         # Generate response based on intent and entities
@@ -319,22 +320,69 @@ async def process_ai_request(request: AIAssistantRequest):
                     
                     # Add to cart
                     await add_to_cart("default_user", cart_item)
-                    
-                    response = f"I've added {product_name} from {store} to your cart."
+                    response = f"I've added {product_name} from {store} to your cart. Would you like to view your cart or continue shopping?"
                 except HTTPException as e:
                     if e.status_code == 404:
-                        response = f"I couldn't find {product_name} in our catalog. Please check the product name and try again."
+                        response = f"I couldn't find {product_name} in our catalog. Would you like to search for similar products?"
                     else:
-                        response = "Sorry, I encountered an error while adding the item to your cart."
+                        print(f"HTTPException during addToCart: {e}")  # Log the exception
+                        response = "Sorry, I encountered an error while adding the item to your cart. Please try again."
+                except Exception as e:
+                    print(f"Unexpected exception during addToCart: {e}")  # Log unexpected exceptions
+                    response = "Sorry, I encountered an error while adding the item to your cart. Please try again."
             else:
-                response = "Could you please specify the product and store you'd like to add?"
-        else:
-            response = f"I'm not sure how to help with that. Could you please rephrase your request? (Detected intent: {intent})"
-        
+                response = "Could you please specify the product and store you'd like to add? For example: 'Add Garri from Mama Nkechi's Groceries'"
+
+        elif intent == "removeFromCart":
+            product_entities = [e for e in entities if e["label"] == "product"]
+            if product_entities:
+                product_name = product_entities[0]["text"]
+                try:
+                    product = await get_product_with_Ai_Assitant(product_name)
+                    await remove_from_cart("default_user", product["id"])
+                    response = f"I've removed {product_name} from your cart. Would you like to view your updated cart?"
+                except HTTPException as e:
+                    if e.status_code == 404:
+                        response = f"I couldn't find {product_name} in your cart. Would you like to view your cart to see what's there?"
+                    else:
+                        response = "Sorry, I encountered an error while removing the item. Please try again."
+            else:
+                response = "Could you please specify which product you'd like to remove from your cart?"
+
+        elif intent == "searchProduct":
+            product_entities = [e for e in entities if e["label"] == "product"]
+            
+            if product_entities:
+                product_name = product_entities[0]["text"]
+                try:
+                    product = await get_product_with_Ai_Assitant(product_name)
+                    response = f"I found {product['product']} for ₦{product['price']} at {product['store']}. Would you like to add it to your cart?"
+                except HTTPException:
+                    # If exact product not found, search for similar products
+                    search_results = await search_products(SearchQuery(query=product_name))
+                    if search_results:
+                        response = f"I found similar products: {', '.join([p['product'] for p in search_results[:3]])}. Would you like to see more details about any of these?"
+                    else:
+                        response = f"I couldn't find {product_name}. Would you like to try a different search term?"
+            else:
+                response = "Could you please specify what you're looking for? You can search by product name."
+
+        elif intent == "viewCart":
+            cart_items = await get_cart("default_user")
+            if cart_items:
+                response = f"Here is your cart, Would you like to remove any items or proceed to checkout?"
+                # Add navigation to cart page
+                navigation = {"path": "/cart", "action": "navigate"}
+            else:
+                response = "Your cart is empty. Would you like to browse some products?"
+        elif intent == "greeting":
+            response = "Hello! I'm your NaijaMarket shopping assistant. How can I help you today? You can ask me to:\n- Add items to your cart\n- Search for products\n- View your cart\n- Remove items from cart"
+
         return AIAssistantResponse(
             message=response,
             intent=intent,
-            entities=entities
+            entities=entities,
+            navigation=navigation
         )
         
     except Exception as e:

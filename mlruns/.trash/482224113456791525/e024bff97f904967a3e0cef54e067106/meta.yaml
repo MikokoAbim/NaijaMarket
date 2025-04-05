@@ -1,0 +1,16 @@
+artifact_uri: mlflow-artifacts:/482224113456791525/e024bff97f904967a3e0cef54e067106/artifacts
+deleted_time: 1743716240905
+end_time: 1743712060510
+entry_point_name: ''
+experiment_id: '482224113456791525'
+lifecycle_stage: deleted
+run_id: e024bff97f904967a3e0cef54e067106
+run_name: clean-chimp-612
+run_uuid: e024bff97f904967a3e0cef54e067106
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1743712040599
+status: 3
+tags: []
+user_id: mikos

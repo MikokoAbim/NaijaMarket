@@ -32,6 +32,10 @@ export interface AIResponse {
   message: string;
   intent?: string;
   entities?: Entity[];
+  navigation?: {
+    path: string;
+    action: 'navigate' | 'open' | 'close';
+  };
 }
 
 export interface AIAssistantProps {
