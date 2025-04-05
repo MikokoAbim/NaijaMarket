@@ -1,81 +1,75 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { CartItem } from '../types';
 import api from '../utils/api';
+import { Product } from '../types';
 
 interface CartContextType {
   cartItems: CartItem[];
   setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
-  addToCart: (productId: number) => Promise<void>;
+  addToCart: (product: Product) => Promise<void>;
   updateQuantity: (productId: number, quantity: number) => Promise<void>;
   removeItem: (productId: number) => Promise<void>;
-  clearCart: () => Promise<void>;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export function CartProvider({ children }: { children: React.ReactNode }) {
+export function CartProvider({ children }: { children: ReactNode }) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
+  const fetchCart = async () => {
+    try {
+      const items = await api.getCart("default_user");
+      setCartItems(items);
+    } catch (error) {
+      console.error('Error fetching cart:', error);
+    }
+  };
+
   useEffect(() => {
-    const fetchCart = async () => {
-      try {
-        const items = await api.getCart();
-        setCartItems(items);
-      } catch (err) {
-        console.error('Failed to fetch cart:', err);
-      }
-    };
     fetchCart();
   }, []);
 
-  const addToCart = async (productId: number) => {
+  const addToCart = async (product: Product) => {
     try {
-      await api.addToCart(productId);
-      const items = await api.getCart();
-      setCartItems(items);
-    } catch (err) {
-      console.error('Failed to add to cart:', err);
+      const cartItem: CartItem = {
+        id: product.id,
+        product_id: product.id,
+        product: product.product,
+        price: product.price,
+        store: product.store,
+        image: product.image,
+        quantity: 1
+      };
+      await api.addToCart("default_user", cartItem);
+      await fetchCart();
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      throw error;
     }
   };
 
   const updateQuantity = async (productId: number, quantity: number) => {
     try {
-      await api.updateCartItem(productId, quantity);
-      const items = await api.getCart();
-      setCartItems(items);
-    } catch (err) {
-      console.error('Failed to update quantity:', err);
+      await api.updateCartItem("default_user", productId, quantity);
+      await fetchCart();
+    } catch (error) {
+      console.error('Error updating cart:', error);
+      throw error;
     }
   };
 
   const removeItem = async (productId: number) => {
     try {
-      await api.removeFromCart(productId);
-      const items = await api.getCart();
-      setCartItems(items);
-    } catch (err) {
-      console.error('Failed to remove item:', err);
-    }
-  };
-
-  const clearCart = async () => {
-    try {
-      await api.clearCart();
-      setCartItems([]);
-    } catch (err) {
-      console.error('Failed to clear cart:', err);
+      await api.removeFromCart("default_user", productId);
+      await fetchCart();
+    } catch (error) {
+      console.error('Error removing from cart:', error);
+      throw error;
     }
   };
 
   return (
-    <CartContext.Provider value={{
-      cartItems,
-      setCartItems,
-      addToCart,
-      updateQuantity,
-      removeItem,
-      clearCart
-    }}>
+    <CartContext.Provider value={{ cartItems, setCartItems, addToCart, updateQuantity, removeItem }}>
       {children}
     </CartContext.Provider>
   );

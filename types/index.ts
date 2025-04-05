@@ -1,21 +1,21 @@
 export interface Product {
   id: number;
-  name: string;
+  product: string;
   price: number;
+  store: string;
   image: string;
-  vendor: string;
-  categories?: string[];
-  rating?: number;
-  badge?: string;
+  category?: string;
+  description?: string;
 }
 
 export interface CartItem {
   id: number;
+  product_id: number;
   product: string;
   price: number;
-  quantity: number;
-  image: string;
   store: string;
+  image: string;
+  quantity: number;
 }
 
 export interface Message {
@@ -31,10 +31,16 @@ export interface Entity {
 export interface AIResponse {
   message: string;
   intent?: string;
-  entities?: Entity[];
+  entities?: Array<{
+    text: string;
+    label: string;
+  }>;
+  navigation?: {
+    path: string;
+    action: string;
+  };
 }
 
 export interface AIAssistantProps {
-  isOpen: boolean;
   onClose: () => void;
 } 

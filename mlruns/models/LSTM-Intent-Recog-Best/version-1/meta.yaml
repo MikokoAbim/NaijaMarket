@@ -1,0 +1,14 @@
+aliases: []
+creation_timestamp: 1743716430718
+current_stage: None
+description: ''
+last_updated_timestamp: 1743716430718
+name: LSTM-Intent-Recog-Best
+run_id: 2f3f534179f849b5a3ebd83d5ba28668
+run_link: ''
+source: mlflow-artifacts:/250651894919945925/2f3f534179f849b5a3ebd83d5ba28668/artifacts/model
+status: READY
+status_message: null
+storage_location: mlflow-artifacts:/250651894919945925/2f3f534179f849b5a3ebd83d5ba28668/artifacts/model
+user_id: null
+version: 1

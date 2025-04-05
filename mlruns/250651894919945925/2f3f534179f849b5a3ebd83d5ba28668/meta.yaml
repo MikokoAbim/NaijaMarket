@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/250651894919945925/2f3f534179f849b5a3ebd83d5ba28668/artifacts
+end_time: 1743716393758
+entry_point_name: ''
+experiment_id: '250651894919945925'
+lifecycle_stage: active
+run_id: 2f3f534179f849b5a3ebd83d5ba28668
+run_name: ambitious-toad-982
+run_uuid: 2f3f534179f849b5a3ebd83d5ba28668
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1743716381835
+status: 3
+tags: []
+user_id: mikos
