@@ -108,120 +108,120 @@ products_db = [
     },
     {
         "id": 2,
-        "product": "Local Beans",
+        "product": "Local beans",
         "price": 3500,
         "image": "/images/products/local-beans.jpg",
         "categories": ["Food & Groceries"],
         "rating": 4.2,
         "store": "Lagos Essentials",
         "badge": "Popular",
-        "description": "Fresh local beans, perfect for traditional dishes"
+        "description": "Fresh Local beans, perfect for traditional dishes"
     },
     {
         "id": 3,
-        "product": "Local Beans",
+        "product": "Local beans",
         "price": 3200,
         "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
         "categories": ["Food & Groceries"],
         "rating": 4.0,
         "store": "Abuja Fresh Foods",
         "badge": "New",
-        "description": "Premium quality local beans from Northern Nigeria"
+        "description": "Premium quality Local beans from Northern Nigeria"
     },
     {
         "id": 4,
-        "product": "Local Beans",
+        "product": "Local beans",
         "price": 3800,
         "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
         "categories": ["Food & Groceries"],
         "rating": 4.3,
         "store": "Ibadan Farmers Market",
         "badge": "Best Value",
-        "description": "Organic local beans from Oyo State farms"
+        "description": "Organic Local beans from Oyo State farms"
     },
     {
         "id": 5,
-        "product": "Local Beans",
+        "product": "Local beans",
         "price": 3000,
         "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
         "categories": ["Food & Groceries"],
         "rating": 3.9,
         "store": "Kano Grains Store",
-        "description": "Traditional local beans from Northern Nigeria"
+        "description": "Traditional Local beans from Northern Nigeria"
     },
     {
         "id": 6,
-        "product": "Local Beans",
+        "product": "Local beans",
         "price": 4000,
         "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
         "categories": ["Food & Groceries"],
         "rating": 4.4,
         "store": "Port Harcourt Fresh Foods",
         "badge": "Premium",
-        "description": "High-quality local beans from Rivers State"
+        "description": "High-quality Local beans from Rivers State"
     },
     {
         "id": 7,
-        "product": "Local Beans",
+        "product": "Local beans",
         "price": 3600,
         "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
         "categories": ["Food & Groceries"],
         "rating": 4.1,
         "store": "Enugu Market Square",
-        "description": "Fresh local beans from Eastern Nigeria"
+        "description": "Fresh Local beans from Eastern Nigeria"
     },
     {
         "id": 8,
-        "product": "Local Beans",
+        "product": "Local beans",
         "price": 4200,
         "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
         "categories": ["Food & Groceries"],
         "rating": 4.6,
         "store": "Calabar Organic Foods",
         "badge": "Organic",
-        "description": "Certified organic local beans from Cross River State"
+        "description": "Certified organic Local beans from Cross River State"
     },
     {
         "id": 9,
-        "product": "Local Beans",
+        "product": "Local beans",
         "price": 3400,
         "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
         "categories": ["Food & Groceries"],
         "rating": 4.0,
         "store": "Benin City Market",
-        "description": "Traditional local beans from Edo State"
+        "description": "Traditional Local beans from Edo State"
     },
     {
         "id": 10,
-        "product": "Local Beans",
+        "product": "Local beans",
         "price": 3900,
         "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
         "categories": ["Food & Groceries"],
         "rating": 4.2,
         "store": "Jos Fresh Produce",
         "badge": "Fresh",
-        "description": "Fresh local beans from Plateau State"
+        "description": "Fresh Local beans from Plateau State"
     },
     {
         "id": 11,
-        "product": "Local Beans",
+        "product": "Local beans",
         "price": 3700,
         "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
         "categories": ["Food & Groceries"],
         "rating": 4.3,
         "store": "Maiduguri Grains",
-        "description": "Premium local beans from Borno State"
+        "description": "Premium Local beans from Borno State"
     },
     {
         "id": 12,
-        "product": "Local Beans",
+        "product": "Local beans",
         "price": 4100,
         "image": "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
         "categories": ["Food & Groceries"],
         "rating": 4.5,
         "store": "Sokoto Fresh Foods",
         "badge": "Premium",
-        "description": "High-quality local beans from Sokoto State"
+        "description": "High-quality Local beans from Sokoto State"
     },
     {
         "id": 13,
